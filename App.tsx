@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState } from 'react';
 import { StyleSheet, Switch, Text, useColorScheme, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import ProfileScreen from './src/pages/ProfileScreen';
 import HomeScreen from './src/pages/HomeScreen';
 import UpdateScreen from './src/pages/UpdateScreen';

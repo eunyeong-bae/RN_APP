@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Dimensions, FlatList, Image, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Colors} from 'react-native/Libraries/NewAppScreen';
 import { data } from '../data';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -24,41 +14,61 @@ type ItemProps = {
   isDarkMode: boolean;
 };
 
+
 const HomeScreen = (props: HomeScreenProps) => {
   const {isDarkMode} = props;
-  const width = Dimensions.get('screen').width;
-  const height = Dimensions.get('screen').height - 180;
+  const menus = [
+    {
+      id: 'menu_like',
+      name: 'heart',
+      size: 20,
+      color: 'red'
+    },
+    {
+      id: 'menu_comment',
+      name: 'comment',
+      size: 20,
+      color: isDarkMode ? "#fff" : "#222"
+    },
+    {
+      id: 'menu_send',
+      name: 'paper-plane',
+      size: 20,
+      color: isDarkMode ? "#fff" : "#222"
+    },
+  ];
 
+  const height = Dimensions.get('screen').height - 180;
   const backgroundStyle = { backgroundColor: isDarkMode ? Colors.darker : "#fff"};
-  console.log("test", isDarkMode, backgroundStyle)
 
   const [selectedId, setSelectedId] = useState('');
 
-  const Item = ({item, onPress, isDarkMode} : ItemProps) => (
-    <View style={[styles.itemWrap, {backgroundColor: isDarkMode ? "#222" : "#fff"}]}>
-      <TouchableOpacity style={styles.item} onPress={onPress}>
-        <Image source={item.url} style={{ width:350, height:300}}/>
-        <View style={{flexDirection:'row', paddingVertical:5}}>
-          <View style={{flexDirection:'row', width:'auto', justifyContent:'space-between', paddingVertical:5, paddingHorizontal:5}}>
-            <Icon name='heart' size={20} color='red'/>
-            <Text style={[styles.title, {color: isDarkMode ? "#fff" : "#222"}]}>100</Text>
+  const Item = ({item, onPress, isDarkMode} : ItemProps) => {
+    const color = isDarkMode ? "#fff" : "#222";
+
+    return (
+      <View style={[styles.itemWrap, {backgroundColor: isDarkMode ? "#222" : "#fff"}]}>
+        <TouchableOpacity style={styles.item} onPress={onPress}>
+          <Image source={item.url} style={{ width:350, height:300}}/>
+          <View style={{flexDirection:'row', paddingVertical:5}}>
+            { menus.map((menu) => {
+              return (
+              <View key={menu.id} style={{flexDirection:'row', width:'auto', padding:5}}>
+                <Icon name={menu.name} size={menu.size} color={menu.color}/>
+                <Text style={[styles.title, {color: menu.color}]}>100</Text>
+              </View>
+              )
+            })}
           </View>
-          <View style={{flexDirection:'row', width:'auto', justifyContent:'space-between', paddingVertical:5, paddingHorizontal:5}}>
-            <Icon name='comment' size={20} color={isDarkMode ? "#fff" : "#222"}/>
-            <Text style={[styles.title, {color:isDarkMode ? "#fff" : "#222"}]}>55</Text>
+          <View style={[styles.title, {flexDirection:'row'}]}>
+            <Text style={{fontWeight:'bold', color, marginRight:5}}>{item.userID}</Text>
+            <Text style={{color}}>{item.title}</Text>
           </View>
-          <View style={{flexDirection:'row', width:'auto', justifyContent:'space-between', paddingVertical:5, paddingHorizontal:5}}>
-            <Icon name='paper-plane' size={20} color={isDarkMode ? "#fff" : "#222"}/>
-          </View>
-        </View>
-        <View style={[styles.title, {flexDirection:'row'}]}>
-          <Text style={{fontWeight:'bold', color:isDarkMode ? "#fff" : "#222", marginRight:5}}>{item.userID}</Text>
-          <Text style={{color:isDarkMode ? "#fff" : "#222"}}>{item.title}</Text>
-        </View>
-        <Text style={[styles.title, {color:isDarkMode ? "#fff" : "#222"}]}>{item.date}</Text>
-      </TouchableOpacity>
-    </View>
-  );
+          <Text style={[styles.title, {color}]}>{item.date}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
   
   const renderItem = ({item} : {item: {[key:string]: string}}) => {
     return (
@@ -71,17 +81,12 @@ const HomeScreen = (props: HomeScreenProps) => {
   };
     
   return (
-    <SafeAreaView style={[backgroundStyle, {borderWidth:1}]}>
-      <StatusBar
-        animated={true}
-        barStyle={isDarkMode ? "light-content" : "dark-content"}
-      />
+    <SafeAreaView style={backgroundStyle}>
       <FlatList
         style={{height}}
         data={data}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        contentContainerStyle={styles.contentContainerStyle}
         extraData={selectedId}
       />
     </SafeAreaView>
@@ -91,10 +96,6 @@ const HomeScreen = (props: HomeScreenProps) => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  contentContainerStyle: {
-    flexGrow:1,
-    alignItems:'center',
-  },
   itemWrap: {
     width:Dimensions.get('screen').width,
     borderWidth:1,
